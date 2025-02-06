@@ -4,14 +4,84 @@
 <head>
     <meta charset="utf-8" />
     <title>JavaScript and the DOM</title>
+    <style>
+        /* Apply a gentle background color and text styling */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        /* Style for the main heading (h1) */
+        h1 {
+            color: #2C3E50;
+            font-size: 2.5em;
+            text-align: center;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Style for the unordered list (navigation links) */
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+            ul li {
+                margin: 10px 0;
+                text-align: center;
+            }
+
+                ul li a {
+                    text-decoration: none;
+                    color: #3498DB;
+                    font-size: 1.2em;
+                    font-weight: 600;
+                    transition: color 0.3s ease;
+                }
+
+                    ul li a:hover {
+                        color: #2980B9;
+                    }
+
+        /* Style for the secondary heading (h2) */
+        h2 {
+            color: #34495E;
+            font-size: 1.8em;
+            margin-top: 40px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        /* Style for the paragraph text */
+        p {
+            font-size: 1.1em;
+            color: #7F8C8D;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        /* Adding some space around the body */
+        body > * {
+            margin-bottom: 20px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Projects I have done</h1>
+    <h1>Portfolio of Learning</h1>
     <ul>
-        <li><a id="navigation" href="index.html">Home</a></li>
-        <li><a id="dome-nodes" href="dom-nodes.html">Dom Nodes</a></li>
-        <li><a id="dome-nodes" href="todolist.html">Todo Tracker</a></li>
+        <li><a href="todolist.html">Todo Tracker</a></li>
     </ul>
-    <h2 id="page-header">Welcome</h2>
+    <h2 id="page-header">Important info</h2>
+    <p> Hi Sarah, you are cute.</p>
 </body>
 </html>
