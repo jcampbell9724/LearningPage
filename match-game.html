@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Javascript Memory Game</title>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 20px 0;
+            background: #6589F9;
+            font-family: Arial, sans-serif;
+        }
+
+        .grid {
+            max-width: 960px;
+            margin: 0 auto;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-evenly;
+        }
+
+        .card {
+            position: relative;
+            transition: transform 0.4s ease-in-out;
+            transform-style: preserve-3d;
+            margin: 5px;
+            cursor: pointer;
+        }
+
+        .card,
+        .back,
+        .front {
+            height: 150px;
+            width: 150px;
+        }
+
+        .back,
+        .front {
+            position: absolute;
+            backface-visibility: hidden;
+        }
+
+        .front {
+            z-index: 2;
+            background: #FAB942 url('../img/question.gif') no-repeat center center / contain;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+            background-color: #6589F9;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        .selected {
+            transform: rotateY(180deg);
+        }
+
+        .match .front {
+            background: #6589F9 !important;
+        }
+
+        .message {
+            text-align: center;
+            font-size: 24px;
+            color: white;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="game-board"></div>
+    <div class="message" id="game-message"></div>
+
+    <script>
+        var cardsArray = [
+            { 'name': 'Ground', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_1432.jpeg?raw=true', },
+            { 'name': 'Balloon', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_1454.jpeg?raw=true', },
+            { 'name': 'Ruins', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_1547.jpeg?raw=true', },
+            { 'name': 'Field', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_5787.jpeg?raw=true', },
+            { 'name': 'Sunset', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_5921.jpeg?raw=true', },
+            { 'name': 'Food', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_6236.jpeg?raw=true', },
+            { 'name': 'Glasses', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_6871.jpeg?raw=true', },
+            { 'name': 'Face', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_6905.png?raw=true', },
+            { 'name': 'Sweaters', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_6990.jpeg?raw=true', },
+            { 'name': 'Train', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_7012.jpeg?raw=true', },
+            { 'name': 'Skiing', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_7059.jpeg?raw=true', },
+            { 'name': 'Club', 'img': 'https://github.com/jcampbell9724/LearningPage/blob/main/IMG_7156.jpeg?raw=true', },
+        ];
+
+        var gameGrid = cardsArray.concat(cardsArray);
+
+        gameGrid.sort(function () {
+            return 0.5 - Math.random();
+        });
+
+        var game = document.getElementById('game-board');
+        var grid = document.createElement('section');
+        grid.setAttribute('class', 'grid');
+        game.appendChild(grid);
+
+        for (var i = 0; i < gameGrid.length; i++) {
+            var card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.name = gameGrid[i].name;
+
+            var front = document.createElement('div');
+            front.classList.add('front');
+            var back = document.createElement('div');
+            back.classList.add('back');
+            back.style.backgroundImage = `url(${gameGrid[i].img})`;
+
+            grid.appendChild(card);
+            card.appendChild(front);
+            card.appendChild(back);
+        };
+
+        var firstGuess = '';
+        var secondGuess = '';
+        var count = 0;
+        var previousTarget = null;
+        var delay = 1200;
+
+        var match = function () {
+            var selected = document.querySelectorAll('.selected');
+            for (var i = 0; i < selected.length; i++) {
+                selected[i].classList.add('match');
+            }
+
+            // Check if all cards are matched and the game is won
+            var matchedCards = document.querySelectorAll('.match');
+            if (matchedCards.length === gameGrid.length) {
+                document.getElementById('game-message').textContent = "You Win! Congratulations!";
+            }
+        }
+
+        var resetGuesses = function () {
+            firstGuess = '';
+            secondGuess = '';
+            count = 0;
+            previousTarget = null;
+
+            var selected = document.querySelectorAll('.selected');
+            for (var i = 0; i < selected.length; i++) {
+                selected[i].classList.remove('selected');
+            }
+        }
+
+        grid.addEventListener('click', function (event) {
+            var clicked = event.target;
+            if (clicked.nodeName == 'SECTION' || clicked == previousTarget || clicked.parentNode.classList.contains('match') || clicked.parentNode.classList.contains('selected')) {
+                return;
+            };
+            if (count < 2) {
+                count++;
+                if (count == 1) {
+                    firstGuess = clicked.parentNode.dataset.name;
+                    clicked.parentNode.classList.add('selected');
+                } else {
+                    secondGuess = clicked.parentNode.dataset.name;
+                    clicked.parentNode.classList.add('selected');
+                }
+                if (firstGuess != '' && secondGuess != '') {
+                    if (firstGuess == secondGuess) {
+                        setTimeout(match, delay);
+                        setTimeout(resetGuesses, delay);
+                    } else {
+                        setTimeout(resetGuesses, delay);
+                    }
+                }
+                previousTarget = clicked;
+            }
+        })
+    </script>
+</body>
+</html>
